@@ -13,3 +13,7 @@ query_ratio = query_value/loss(a|∅)
 # Dataset
 
 https://huggingface.co/datasets/WideCai122222222222/Think_and_Query_value_for_R1
+
+# Result
+
+![Think Ratio Distribution](/data/7B_results/think_ratio_all_overlapping.png)
