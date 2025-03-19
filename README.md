@@ -12,7 +12,7 @@ query_ratio = query_value/loss(a|∅)
 
 # Dataset
 
-https://huggingface.co/datasets/WideCai122222222222/Think_and_Query_value_for_R1
+https://huggingface.co/datasets/caihuaiguang/Think_and_Query_value_for_R1
 
 # Result
 
