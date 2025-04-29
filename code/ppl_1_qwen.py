@@ -15,9 +15,9 @@ from torch.utils.data.distributed import DistributedSampler
 from torch.nn.utils.rnn import pad_sequence
 from torch.nn.parallel import DistributedDataParallel as DDP
 
-QUERY_TEMPLATE = "<｜begin▁of▁sentence｜><｜User｜>{}<｜Assistant｜>"
-THINK_TEMPLATE = "<think>\n{}\n</think>"
-ANSWER_TEMPLATE = "{}<｜end▁of▁sentence｜>"
+QUERY_TEMPLATE = "<|im_start|>user\n{}<|im_end|>\n<|im_start|>assistant\n"
+THINK_TEMPLATE = "<think>\n{}\n</think>\n\n"
+ANSWER_TEMPLATE = "{}<|im_end|>\n"
 
 
 def list_of_lists_to_tensor(data, padding_value=0):
@@ -258,7 +258,7 @@ def main():
     input_type = args.type
     print(input_type)
     # type : qta, qa, ta, a
-    model_name = "/root/autodl-tmp/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+    model_name = "/root/autodl-tmp/models/Qwen/Qwen3-0.6B"
     # model_name = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
     # model_name = "/data/minimax-dialogue/experiment/qwen/DeepSeek-R1-Distill-Qwen-32B"
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
@@ -266,7 +266,7 @@ def main():
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.float16)
     data_path = "/root/autodl-tmp/Think_and_Query_value_for_R1/data/distill_r1_110k_sft_with_id.jsonl"
     
-    output_path = "/root/autodl-tmp/Think_and_Query_value_for_R1/data/output_1_5B_{}.jsonl"
+    output_path = "/root/autodl-tmp/Think_and_Query_value_for_R1/data/qwen3_output_0_6B_{}.jsonl"
     # output_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/output_7B_{}.jsonl"
     # output_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/output_32B_{}.jsonl"
     dataset1 = SimpleDataset(tokenizer, data_path, input_type)

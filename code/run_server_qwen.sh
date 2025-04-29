@@ -7,7 +7,7 @@ which python
 # torchrun --nproc_per_node=8 /data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/code/ppl_1.py --type ta_q
 # torchrun --nproc_per_node=8 /data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/code/ppl_1.py --type ta_empty
 # torchrun --nproc_per_node=8 /data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/code/ppl_seek.py --type q
-torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1.py --type a_t
-torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1.py --type a_empty
-torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1.py --type a_qt
-torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1.py --type a_q
+torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1_qwen.py --type a_t
+torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1_qwen.py --type a_empty
+torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1_qwen.py --type a_qt
+torchrun --nproc_per_node=1 /root/autodl-tmp/Think_and_Query_value_for_R1/code/ppl_1_qwen.py --type a_q

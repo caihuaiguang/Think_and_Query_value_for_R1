@@ -45,6 +45,6 @@ def add_trace_id(input_file_path, output_file_path):
 
 
 if __name__ == "__main__":
-    input_file_path = "/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/distill_r1_110k_sft.jsonl"
-    output_file_path = "/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/distill_r1_110k_sft_with_id.jsonl"
+    input_file_path = "/root/Think_and_Query_value_for_R1/data/distill_r1_110k_sft.jsonl"
+    output_file_path = "/root/Think_and_Query_value_for_R1/data/distill_r1_110k_sft_with_id.jsonl"
     add_trace_id(input_file_path, output_file_path)
