@@ -16,7 +16,7 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.nn.parallel import DistributedDataParallel as DDP
 
 QUERY_TEMPLATE = "<｜begin▁of▁sentence｜><｜User｜>{}<｜Assistant｜>"
-THINK_TEMPLATE = "<think>\n{}\n</think>"
+THINK_TEMPLATE = "<think>{}</think>"
 ANSWER_TEMPLATE = "{}<｜end▁of▁sentence｜>"
 
 
@@ -96,7 +96,7 @@ class SimpleDataset(Dataset):
         elif self.input_type == "a_q":
             think = self.tokenizer(
                 THINK_TEMPLATE.format(
-                    ""
+                    "\n\n",
                 ),
                 add_special_tokens=False,
                 truncation=False
@@ -132,7 +132,7 @@ class SimpleDataset(Dataset):
             )
             think = self.tokenizer(
                 THINK_TEMPLATE.format(
-                    ""
+                    "\n\n",
                 ),
                 add_special_tokens=False,
                 truncation=False
@@ -211,7 +211,9 @@ def Forward(model, batch):
             else:
                 # 提取对应的 log 概率
                 valid_log_probs = valid_sample_log_probs.gather(-1, valid_sample_labels.unsqueeze(-1)).squeeze(-1)
-                sample_loss = -valid_log_probs.mean()
+                # sample_loss = -valid_log_probs.mean()
+                # change to sum
+                sample_loss = -valid_log_probs.sum()
             
             losses.append(sample_loss)
     
@@ -221,7 +223,8 @@ def Forward(model, batch):
     # 打印损失值
     # print(f"Loss: {loss}")
     
-    return [{"trace_id": trace_ids[i], "mean(log_probability)": loss[i]} for i in range(len(trace_ids))]
+    # return [{"trace_id": trace_ids[i], "mean(log_probability)": loss[i]} for i in range(len(trace_ids))]
+    return [{"trace_id": trace_ids[i], "sum(log_probability)": loss[i]} for i in range(len(trace_ids))]
 
 def deduplicate_dict_list(dict_list, keys=None):
     """
@@ -258,16 +261,18 @@ def main():
     input_type = args.type
     print(input_type)
     # type : qta, qa, ta, a
-    model_name = "/root/autodl-tmp/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
+    # model_name = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
     # model_name = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+    model_name = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/models/deepseek-ai/DeepSeek-R1-Distill-Qwen-14B"
     # model_name = "/data/minimax-dialogue/experiment/qwen/DeepSeek-R1-Distill-Qwen-32B"
     tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
     tokenizer.model_max_length = 131072
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=True, torch_dtype=torch.float16)
-    data_path = "/root/autodl-tmp/Think_and_Query_value_for_R1/data/distill_r1_110k_sft_with_id.jsonl"
+    data_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/distill_r1_110k_sft_with_id.jsonl"
     
-    output_path = "/root/autodl-tmp/Think_and_Query_value_for_R1/data/output_1_5B_{}.jsonl"
-    # output_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/output_7B_{}.jsonl"
+    # output_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/sum_1_5B_{}.jsonl"
+    # output_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/sum_7B_{}.jsonl"
+    output_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/sum_14B_{}.jsonl"
     # output_path = "/data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/data/output_32B_{}.jsonl"
     dataset1 = SimpleDataset(tokenizer, data_path, input_type)
 
@@ -322,6 +327,6 @@ def main():
 if __name__ == "__main__":
     main()
     """
-    nohup /root/autodl-tmp/Think_and_Query_value_for_R1/code/run_server.sh > /root/autodl-tmp/Think_and_Query_value_for_R1/code/output.log 2>&1 &
+    nohup /data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/code/run_server.sh > /data/minimax-dialogue/users/shuishengmu/doc_qa/super_filter_think/thinking_value/code/output.log 2>&1 &
     
     """
